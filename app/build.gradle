@@ -1,5 +1,7 @@
 plugins {
     id 'com.android.application'
+    id 'dagger.hilt.android.plugin'
+    id 'androidx.navigation.safeargs'
 }
 
 android {
@@ -16,6 +18,10 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
+    buildFeatures {
+        viewBinding true
+    }
+
     buildTypes {
         release {
             minifyEnabled false
@@ -29,10 +35,42 @@ android {
 }
 
 dependencies {
+    def lifecycle_version = "2.2.0"
+    def nav_version = "2.3.1"
+    def room_version = "2.2.5"
+    def hilt_version = "2.28-alpha"
+    def androidx_hilt_version = "1.0.0-alpha02"
+    def tikxml_version = "0.8.13"
 
     implementation 'androidx.appcompat:appcompat:1.2.0'
     implementation 'com.google.android.material:material:1.2.1'
     implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
+
+    implementation "androidx.recyclerview:recyclerview:1.1.0"
+    implementation 'androidx.preference:preference:1.1.1'
+
+    implementation "androidx.lifecycle:lifecycle-viewmodel:$lifecycle_version"
+    implementation "androidx.lifecycle:lifecycle-livedata:$lifecycle_version"
+
+    implementation "androidx.navigation:navigation-fragment:$nav_version"
+    implementation "androidx.navigation:navigation-ui:$nav_version"
+
+    implementation "androidx.room:room-runtime:$room_version"
+    annotationProcessor "androidx.room:room-compiler:$room_version"
+
+    implementation "com.google.dagger:hilt-android:$hilt_version"
+    annotationProcessor "com.google.dagger:hilt-android-compiler:$hilt_version"
+    implementation "androidx.hilt:hilt-lifecycle-viewmodel:$androidx_hilt_version"
+    annotationProcessor "androidx.hilt:hilt-compiler:$androidx_hilt_version"
+
+    implementation 'com.squareup.retrofit2:retrofit:2.9.0'
+    //noinspection GradleDependency
+    implementation "com.tickaroo.tikxml:retrofit-converter:$tikxml_version"
+    implementation "com.tickaroo.tikxml:annotation:$tikxml_version"
+    //noinspection GradleDependency
+    implementation "com.tickaroo.tikxml:core:$tikxml_version"
+    annotationProcessor "com.tickaroo.tikxml:processor:$tikxml_version"
+
     testImplementation 'junit:junit:4.13.1'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
