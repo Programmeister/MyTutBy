@@ -1,6 +1,6 @@
 package by.pavel.mytutby.network;
 
-import by.pavel.mytutby.data.feed.Html;
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Url;
@@ -8,5 +8,5 @@ import retrofit2.http.Url;
 public interface FeedService {
 
     @GET
-    Call<Html> getFeedsLinks(@Url String url);
+    Call<ResponseBody> getFeedsLinks(@Url String url);
 }

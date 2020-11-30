@@ -5,6 +5,7 @@ import android.util.Log;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
@@ -13,16 +14,13 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import by.pavel.mytutby.R;
 import by.pavel.mytutby.data.Feed;
 import dagger.hilt.android.qualifiers.ApplicationContext;
 
 import static android.content.Context.MODE_PRIVATE;
 
 public class ChannelRepository implements FeedRepository {
-
-    private static final String FILENAME = "feeds.txt";
-    private static final String LOG_TAG = "FILE_WORK_TAG";
-    private static final String SEPARATOR = " && ";
 
     private final Context appContext;
 
@@ -33,16 +31,29 @@ public class ChannelRepository implements FeedRepository {
 
     @Override
     public List<Feed> getFeeds() {
-        try (BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(
-                appContext.openFileInput(FILENAME)
-        ))) {
-            List<Feed> feeds = new ArrayList<>();
-            String str = "";
-            while ((str = bufferedReader.readLine()) != null) {
-                int pos = str.indexOf(SEPARATOR);
-                feeds.add(new Feed(str.substring(0, pos), str.substring(pos + 4)));
-                Log.d(LOG_TAG, str);
+        String fileName = appContext.getString(R.string.file_name);
+        try {
+            File file = appContext.getFileStreamPath(fileName);
+            if (!file.exists()) {
+                BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(
+                        appContext.openFileOutput(fileName, Context.MODE_APPEND)
+                ));
+                String defaultFeed = appContext.getString(R.string.default_feed);
+                writer.append(defaultFeed);
+                writer.newLine();
+                writer.close();
             }
+            BufferedReader reader = new BufferedReader(new InputStreamReader(
+                    appContext.openFileInput(fileName)
+            ));
+            List<Feed> feeds = new ArrayList<>();
+            String str;
+            String separator = appContext.getString(R.string.separator);
+            while ((str = reader.readLine()) != null) {
+                int pos = str.indexOf(separator);
+                feeds.add(new Feed(str.substring(0, pos), str.substring(pos + 4)));
+            }
+            reader.close();
             return feeds;
         } catch (IOException e) {
             e.printStackTrace();
@@ -53,17 +64,18 @@ public class ChannelRepository implements FeedRepository {
     @Override
     public void deleteFeed(String title) {
         try {
+            String fileName = appContext.getString(R.string.file_name);
             BufferedReader reader = new BufferedReader(new InputStreamReader(
-                    appContext.openFileInput(FILENAME)
+                    appContext.openFileInput(appContext.getString(R.string.file_name))
             ));
             List<String> list = new ArrayList<>();
-            String line = "";
+            String line;
             while ((line = reader.readLine()) != null)
                 if (!line.contains(title))
                     list.add(line);
             reader.close();
             BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(
-                    appContext.openFileOutput(FILENAME, MODE_PRIVATE)
+                    appContext.openFileOutput(fileName, MODE_PRIVATE)
             ));
             for (String s : list) {
                 writer.write(s);

@@ -20,4 +20,9 @@
     <string name="dark_theme_summary">Comfortable at night</string>
     <string name="dark_theme">Dark theme</string>
     <string name="theme_settings">Theme settings</string>
+    <string name="file_name">feed.txt</string>
+    <string name="separator"><![CDATA[\" && \"]]></string>
+    <string name="default_feed"><![CDATA[\"TUT.BY - Главные новости недели && https://news.tut.by/rss/index.rss\"]]></string>
+    <string name="fragment_feed">Feeds</string>
+    <string name="fragment_new_feed">Add feeds</string>
 </resources>

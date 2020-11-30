@@ -49,9 +49,11 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.FeedHolder> {
         public FeedHolder(HolderFeedBinding binding) {
             super(binding.getRoot());
             this.binding = binding;
-            this.binding.deleteButton.setOnClickListener(v ->
-                    viewModel.deleteFeed(feeds.get(getAdapterPosition()))
-            );
+            this.binding.deleteButton.setOnClickListener(v -> {
+                viewModel.deleteFeed(feeds.get(getAdapterPosition()));
+                feeds.remove(getAdapterPosition());
+                notifyItemRemoved(getAdapterPosition());
+            });
         }
 
         public void bind(Feed feed) {

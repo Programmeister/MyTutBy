@@ -58,7 +58,7 @@
     <fragment
         android:id="@+id/feedFragment"
         android:name="by.pavel.mytutby.ui.feed.FeedFragment"
-        android:label="fragment_feed"
+        android:label="@string/fragment_feed"
         tools:layout="@layout/fragment_feed">
 
         <action
@@ -74,7 +74,7 @@
     <fragment
         android:id="@+id/newFeedFragment"
         android:name="by.pavel.mytutby.ui.feed.newfeed.NewFeedFragment"
-        android:label="fragment_new_feed"
+        android:label="@string/fragment_new_feed"
         tools:layout="@layout/fragment_new_feed" />
 
 </navigation>

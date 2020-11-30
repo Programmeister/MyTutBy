@@ -9,8 +9,6 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
-import java.net.URL;
-import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -27,12 +25,10 @@ import by.pavel.mytutby.data.feed.Link;
 import by.pavel.mytutby.network.FeedService;
 import by.pavel.mytutby.util.toaster.ToastProvider;
 import dagger.hilt.android.qualifiers.ApplicationContext;
-import okio.Okio;
+import okhttp3.ResponseBody;
+import retrofit2.Call;
 
 public class AddChannelRepository implements NewFeedRepository {
-
-    private static final String FILENAME = "feeds.txt";
-    private static final String SEPARATOR = " && ";
 
     private final Context appContext;
     private final FeedService feedService;
@@ -49,29 +45,27 @@ public class AddChannelRepository implements NewFeedRepository {
 
     // TODO: Don't work
     @Override
-    public List<Feed> getNewFeeds(String link) {
+    public List<Feed> getNewFeeds(String url) {
         Future<List<Feed>> future = executorService.submit(() -> {
             try {
-                URL url = new URL(link);
-                URLConnection urlConnection = url.openConnection();
-//                BufferedReader reader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
-//                StringBuilder stringBuilder = new StringBuilder();
-//                String line;
-//                while ((line = reader.readLine()) != null) {
-//                    stringBuilder.append(line);
-//                }
-//                reader.close();
-//                String page = stringBuilder.toString();
-                TikXml parser = new TikXml.Builder()
-                        .exceptionOnUnreadXml(false)
-                        .build();
-                Html html = parser.read(Okio.buffer(Okio.source(urlConnection.getInputStream())), Html.class);
+                Call<ResponseBody> call = feedService.getFeedsLinks(url);
+                ResponseBody body = call.execute().body();
+                if (body == null)
+                    return null;
 
+                String s = body.string();
+//                Handler handler = new Handler(Looper.getMainLooper());
+//                handler.post(() ->
+//                        Toast.makeText(appContext, s, Toast.LENGTH_LONG).show()
+//                );
+
+                TikXml parser = new TikXml.Builder().exceptionOnUnreadXml(false).build();
+                Html html = parser.read(body.source(), Html.class);
                 List<Link> list = html.links;
                 List<Feed> feeds = new ArrayList<>();
-                for (Link l : list)
-                    if (l.type.contains("application/rss"))
-                        feeds.add(new Feed(l.title, l.href));
+                for (Link link : list)
+                    if (link.type.contains("application/rss"))
+                        feeds.add(new Feed(link.title, link.href));
                 return feeds;
             } catch (IOException e) {
                 toastProvider.showToast(R.string.connection_problem);
@@ -88,9 +82,21 @@ public class AddChannelRepository implements NewFeedRepository {
 
     @Override
     public void addFeed(Feed feed) {
-        String line = feed.title + SEPARATOR + feed.link;
+        String fileName = appContext.getString(R.string.file_name);
+        String separator = appContext.getString(R.string.separator);
+        String line = feed.title + separator + feed.link;
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(
+                appContext.openFileInput(fileName)
+        ))) {
+            String str;
+            while ((str = reader.readLine()) != null)
+                if (line.equals(str))
+                    return;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         try (BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(
-                appContext.openFileOutput(FILENAME, Context.MODE_APPEND)
+                appContext.openFileOutput(fileName, Context.MODE_APPEND)
         ))) {
             writer.append(line);
             writer.newLine();

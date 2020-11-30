@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import androidx.annotation.NonNull;
-import androidx.hilt.lifecycle.ViewModelInject;
 import androidx.recyclerview.widget.RecyclerView;
 import by.pavel.mytutby.data.Feed;
 import by.pavel.mytutby.databinding.HolderNewFeedBinding;
@@ -50,9 +49,11 @@ public class NewFeedAdapter extends RecyclerView.Adapter<NewFeedAdapter.NewFeedH
         public NewFeedHolder(@NonNull HolderNewFeedBinding binding) {
             super(binding.getRoot());
             this.binding = binding;
-            this.binding.addButton.setOnClickListener(v ->
-                    viewModel.addFeed(feeds.get(getAdapterPosition()))
-            );
+            this.binding.addButton.setOnClickListener(v -> {
+                viewModel.addFeed(feeds.get(getAdapterPosition()));
+                feeds.remove(getAdapterPosition());
+                notifyItemRemoved(getAdapterPosition());
+            });
         }
 
         public void bind(Feed feed) {

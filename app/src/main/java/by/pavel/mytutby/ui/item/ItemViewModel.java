@@ -20,7 +20,6 @@ public class ItemViewModel extends ViewModel {
     }
 
     public void markReading() {
-        item.state = "reading";
         repository.updateItem(item);
     }
 
