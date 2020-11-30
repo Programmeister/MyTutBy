@@ -12,6 +12,10 @@
         android:title="@string/forward"
         app:showAsAction="always" />
     <item
+        android:id="@+id/mark_done"
+        android:title="@string/mark_done"
+        app:showAsAction="ifRoom" />
+    <item
         android:id="@+id/action_refresh"
         android:icon="@drawable/ic_refresh"
         android:title="@string/refresh"

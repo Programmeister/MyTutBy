@@ -6,6 +6,7 @@ import com.tickaroo.tikxml.retrofit.TikXmlConverterFactory;
 import javax.inject.Singleton;
 
 import androidx.annotation.NonNull;
+import by.pavel.mytutby.network.FeedService;
 import by.pavel.mytutby.network.RssService;
 import dagger.Module;
 import dagger.Provides;
@@ -35,5 +36,12 @@ public class NetworkModule {
     @Singleton
     static RssService provideRssService(@NonNull Retrofit retrofit) {
         return retrofit.create(RssService.class);
+    }
+
+    @NonNull
+    @Provides
+    @Singleton
+    static FeedService provideFeedService(@NonNull Retrofit retrofit) {
+        return retrofit.create(FeedService.class);
     }
 }

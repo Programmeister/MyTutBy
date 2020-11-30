@@ -1,4 +1,4 @@
-package by.pavel.mytutby.data;
+package by.pavel.mytutby.data.api;
 
 import com.tickaroo.tikxml.annotation.Element;
 import com.tickaroo.tikxml.annotation.Path;
@@ -12,6 +12,6 @@ import java.util.List;
 //})
 public class Rss {
     @Path("channel")
-    @Element
-    public List<Item> items;
+    @Element(name = "item")
+    public List<Post> items;
 }

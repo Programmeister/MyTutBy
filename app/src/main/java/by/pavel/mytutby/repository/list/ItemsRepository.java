@@ -1,6 +1,7 @@
-package by.pavel.mytutby.repository;
+package by.pavel.mytutby.repository.list;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -10,26 +11,28 @@ import javax.inject.Inject;
 import androidx.lifecycle.LiveData;
 import by.pavel.mytutby.R;
 import by.pavel.mytutby.data.Item;
-import by.pavel.mytutby.data.Rss;
+import by.pavel.mytutby.data.api.Post;
+import by.pavel.mytutby.data.api.Rss;
 import by.pavel.mytutby.db.ItemDao;
 import by.pavel.mytutby.network.RssService;
 import by.pavel.mytutby.util.toaster.ToastProvider;
 import retrofit2.Response;
 
-public class ListRepository implements Repository {
+public class ItemsRepository implements by.pavel.mytutby.repository.list.ListRepository {
 
     private final ItemDao dao;
-    private final RssService service;
+    private final RssService api;
     private final ExecutorService executorService;
     private final ToastProvider toastProvider;
 
     @Inject
-    public ListRepository(
+    public ItemsRepository(
             ItemDao itemDao,
             RssService rssService,
-            ToastProvider toaster) {
+            ToastProvider toaster
+    ) {
         dao = itemDao;
-        service = rssService;
+        api = rssService;
         toastProvider = toaster;
         executorService = Executors.newFixedThreadPool(1);
     }
@@ -43,9 +46,12 @@ public class ListRepository implements Repository {
     public void loadItems() {
         executorService.submit(() -> {
             try {
-                Response<Rss> response = service.getRss().execute();
+                Response<Rss> response = api.getRss().execute();
                 if (response.isSuccessful() && response.body() != null) {
-                    List<Item> items = response.body().items;
+                    List<Post> list = response.body().items;
+                    List<Item> items = new ArrayList<>();
+                    for (Post item : list)
+                        items.add(new Item(item.title, item.link, item.description, item.pubDate, "new"));
                     dao.clearItems();
                     dao.insertItems(items);
                 } else toastProvider.showToast(R.string.source_problem);

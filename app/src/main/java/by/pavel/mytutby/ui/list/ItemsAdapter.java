@@ -104,6 +104,7 @@ public class ItemsAdapter
             binding.title.setText(item.title);
             binding.description.setText(item.description);
             binding.date.setText(item.pubDate);
+            binding.state.setText(item.state);
         }
     }
 }

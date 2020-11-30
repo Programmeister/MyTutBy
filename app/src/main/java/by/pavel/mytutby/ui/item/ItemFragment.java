@@ -2,6 +2,7 @@ package by.pavel.mytutby.ui.item;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -26,6 +27,7 @@ import dagger.hilt.android.AndroidEntryPoint;
 public class ItemFragment extends Fragment {
 
     private FragmentItemBinding binding;
+    private ItemViewModel viewModel;
     private ItemFragmentArgs args;
 
     @Override
@@ -40,12 +42,29 @@ public class ItemFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        viewModel = new ViewModelProvider(this).get(ItemViewModel.class);
         if (getArguments() != null)
             args = ItemFragmentArgs.fromBundle(getArguments());
+        viewModel.loadItem(args.getUrl());
         binding.webView.setWebViewClient(new WebViewClient() {
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
                 return false;
+            }
+
+            @Override
+            public void onPageStarted(WebView view, String url, Bitmap favicon) {
+                super.onPageStarted(view, url, favicon);
+                if (binding != null)
+                    binding.progressBar.setVisibility(View.VISIBLE);
+            }
+
+            @Override
+            public void onPageFinished(WebView view, String url) {
+                super.onPageFinished(view, url);
+                if (binding != null)
+                    binding.progressBar.setVisibility(View.GONE);
+                viewModel.markReading();
             }
         });
 //        binding.webView.getSettings().setJavaScriptEnabled(true);
@@ -83,6 +102,9 @@ public class ItemFragment extends Fragment {
                 break;
             case R.id.action_launch:
                 launchBrowser();
+                break;
+            case R.id.mark_done:
+                viewModel.markDone();
                 break;
         }
         return super.onOptionsItemSelected(item);

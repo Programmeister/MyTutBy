@@ -10,4 +10,14 @@
     <string name="connection_problem">Connection problem</string>
     <string name="action_search">Search</string>
     <string name="search_hint">Type title</string>
+    <string name="new_">new</string>
+    <string name="reading">reading</string>
+    <string name="mark_done">Mark as done</string>
+    <string name="add">Add</string>
+    <string name="delete">Delete</string>
+    <string name="feeds">Feeds</string>
+    <string name="theme_key">themeKey</string>
+    <string name="dark_theme_summary">Comfortable at night</string>
+    <string name="dark_theme">Dark theme</string>
+    <string name="theme_settings">Theme settings</string>
 </resources>

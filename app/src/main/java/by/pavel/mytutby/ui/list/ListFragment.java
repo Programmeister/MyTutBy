@@ -1,9 +1,11 @@
 package by.pavel.mytutby.ui.list;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.SearchView;
@@ -12,6 +14,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import by.pavel.mytutby.R;
 import by.pavel.mytutby.databinding.FragmentListBinding;
@@ -37,13 +40,14 @@ public class ListFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        binding.progressBar.setVisibility(View.VISIBLE);
         viewModel = new ViewModelProvider(this).get(ListViewModel.class);
         binding.recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         binding.recyclerView.setAdapter(itemsAdapter);
-        viewModel.update();
         viewModel.items.observe(getViewLifecycleOwner(), items -> {
             if (items != null)
                 itemsAdapter.setItems(items);
+            binding.progressBar.setVisibility(View.GONE);
         });
     }
 
@@ -71,5 +75,25 @@ public class ListFragment extends Fragment {
                 return false;
             }
         });
+    }
+
+    @SuppressLint("NonConstantResourceId")
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_reload:
+                binding.progressBar.setVisibility(View.VISIBLE);
+                viewModel.updateList();
+                break;
+            case R.id.action_setting:
+                Navigation.findNavController(binding.getRoot())
+                        .navigate(R.id.action_open_settings);
+                break;
+            case R.id.action_feeds:
+                Navigation.findNavController(binding.getRoot())
+                        .navigate(R.id.action_open_feedFragment);
+                break;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }
