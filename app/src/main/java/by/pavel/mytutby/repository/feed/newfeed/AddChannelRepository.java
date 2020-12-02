@@ -54,10 +54,6 @@ public class AddChannelRepository implements NewFeedRepository {
                     return null;
 
                 String s = body.string();
-//                Handler handler = new Handler(Looper.getMainLooper());
-//                handler.post(() ->
-//                        Toast.makeText(appContext, s, Toast.LENGTH_LONG).show()
-//                );
 
                 TikXml parser = new TikXml.Builder().exceptionOnUnreadXml(false).build();
                 Html html = parser.read(body.source(), Html.class);

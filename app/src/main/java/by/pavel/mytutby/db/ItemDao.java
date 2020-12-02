@@ -20,8 +20,11 @@ public interface ItemDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertItems(List<Item> items);
 
-    @Query("SELECT * FROM items")
+    @Query("SELECT * FROM items ORDER BY time DESC")
     LiveData<List<Item>> getItems();
+
+    @Query("SELECT * FROM items ORDER BY time")
+    List<Item> getItemsReversed();
 
     @Query("SELECT * FROM items WHERE link = :link")
     Item getItem(String link);

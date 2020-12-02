@@ -1,11 +1,9 @@
 package by.pavel.mytutby.repository.feed;
 
 import android.content.Context;
-import android.util.Log;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
@@ -32,20 +30,9 @@ public class ChannelRepository implements FeedRepository {
     @Override
     public List<Feed> getFeeds() {
         String fileName = appContext.getString(R.string.file_name);
-        try {
-            File file = appContext.getFileStreamPath(fileName);
-            if (!file.exists()) {
-                BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(
-                        appContext.openFileOutput(fileName, Context.MODE_APPEND)
-                ));
-                String defaultFeed = appContext.getString(R.string.default_feed);
-                writer.append(defaultFeed);
-                writer.newLine();
-                writer.close();
-            }
-            BufferedReader reader = new BufferedReader(new InputStreamReader(
-                    appContext.openFileInput(fileName)
-            ));
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(
+                appContext.openFileInput(fileName)
+        ))) {
             List<Feed> feeds = new ArrayList<>();
             String str;
             String separator = appContext.getString(R.string.separator);
@@ -53,7 +40,6 @@ public class ChannelRepository implements FeedRepository {
                 int pos = str.indexOf(separator);
                 feeds.add(new Feed(str.substring(0, pos), str.substring(pos + 4)));
             }
-            reader.close();
             return feeds;
         } catch (IOException e) {
             e.printStackTrace();

@@ -10,4 +10,6 @@ public interface ListRepository {
     LiveData<List<Item>> getItems();
 
     void loadItems();
+
+    void deleteOldItem();
 }

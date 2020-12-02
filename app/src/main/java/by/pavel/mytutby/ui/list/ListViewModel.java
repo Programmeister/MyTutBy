@@ -21,6 +21,7 @@ public class ListViewModel extends ViewModel {
     ) {
         this.repository = repository;
         items = repository.getItems();
+        repository.deleteOldItem();
         updateList();
     }
 

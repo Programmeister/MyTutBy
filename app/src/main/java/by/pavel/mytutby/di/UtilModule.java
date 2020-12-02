@@ -1,5 +1,7 @@
 package by.pavel.mytutby.di;
 
+import by.pavel.mytutby.util.dateformatter.DateFormatter;
+import by.pavel.mytutby.util.dateformatter.MyDateFormatter;
 import by.pavel.mytutby.util.toaster.ToastProvider;
 import by.pavel.mytutby.util.toaster.Toaster;
 import dagger.Binds;
@@ -13,4 +15,7 @@ public abstract class UtilModule {
 
     @Binds
     abstract ToastProvider bindToastProvider(Toaster toaster);
+
+    @Binds
+    abstract DateFormatter bindDateFormatter(MyDateFormatter myDateFormatter);
 }
