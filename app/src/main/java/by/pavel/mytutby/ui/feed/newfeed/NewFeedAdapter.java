@@ -13,8 +13,8 @@ import by.pavel.mytutby.databinding.HolderNewFeedBinding;
 
 public class NewFeedAdapter extends RecyclerView.Adapter<NewFeedAdapter.NewFeedHolder> {
 
-    private final NewFeedViewModel viewModel;
     private final List<Feed> feeds = new ArrayList<>();
+    private final NewFeedViewModel viewModel;
 
     public NewFeedAdapter(NewFeedViewModel viewModel) {
         this.viewModel = viewModel;
@@ -39,7 +39,9 @@ public class NewFeedAdapter extends RecyclerView.Adapter<NewFeedAdapter.NewFeedH
     }
 
     public void setFeeds(List<Feed> newFeeds) {
+        feeds.clear();
         feeds.addAll(newFeeds);
+        notifyDataSetChanged();
     }
 
     class NewFeedHolder extends RecyclerView.ViewHolder {
@@ -49,14 +51,12 @@ public class NewFeedAdapter extends RecyclerView.Adapter<NewFeedAdapter.NewFeedH
         public NewFeedHolder(@NonNull HolderNewFeedBinding binding) {
             super(binding.getRoot());
             this.binding = binding;
-            this.binding.addButton.setOnClickListener(v -> {
-                viewModel.addFeed(feeds.get(getAdapterPosition()));
-                feeds.remove(getAdapterPosition());
-                notifyItemRemoved(getAdapterPosition());
-            });
+            this.binding.addButton.setOnClickListener(v ->
+                    viewModel.addFeed(feeds.get(getAdapterPosition()))
+            );
         }
 
-        public void bind(Feed feed) {
+        public void bind(@NonNull Feed feed) {
             binding.title.setText(feed.title);
         }
     }

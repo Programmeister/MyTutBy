@@ -14,7 +14,8 @@ import by.pavel.mytutby.databinding.ActivityMainBinding;
 import dagger.hilt.android.AndroidEntryPoint;
 
 @AndroidEntryPoint
-public class MainActivity extends AppCompatActivity implements SharedPreferences.OnSharedPreferenceChangeListener {
+public class MainActivity extends AppCompatActivity
+        implements SharedPreferences.OnSharedPreferenceChangeListener {
 
     private ActivityMainBinding binding;
     private NavController navController;
@@ -47,7 +48,7 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
             setTheme(sharedPreferences.getBoolean(key, false));
     }
 
-    public void setTheme(boolean isDark) {
+    private void setTheme(boolean isDark) {
         AppCompatDelegate.setDefaultNightMode(
                 isDark ? AppCompatDelegate.MODE_NIGHT_YES : AppCompatDelegate.MODE_NIGHT_NO
         );

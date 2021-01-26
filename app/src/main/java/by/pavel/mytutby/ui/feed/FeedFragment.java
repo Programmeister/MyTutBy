@@ -36,14 +36,15 @@ public class FeedFragment extends Fragment {
         feedAdapter = new FeedAdapter(viewModel);
         binding.myFeedsList.setLayoutManager(new LinearLayoutManager(getContext()));
         binding.myFeedsList.setAdapter(feedAdapter);
-        viewModel.getFeeds().observe(getViewLifecycleOwner(), feeds -> {
+        viewModel.readFeeds();
+        viewModel.getData().observe(getViewLifecycleOwner(), feeds -> {
             if (feeds != null)
                 feedAdapter.setFeeds(feeds);
         });
-        binding.addButton.setOnClickListener(v -> {
-            Navigation.findNavController(binding.getRoot())
-                    .navigate(R.id.action_open_newFeedFragment);
-        });
+        binding.addButton.setOnClickListener(v ->
+                Navigation.findNavController(binding.getRoot())
+                        .navigate(R.id.action_open_newFeedFragment)
+        );
     }
 
     @Override

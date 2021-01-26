@@ -39,7 +39,7 @@ public class NewFeedFragment extends Fragment {
         newFeedAdapter = new NewFeedAdapter(viewModel);
         binding.newFeedsList.setLayoutManager(new LinearLayoutManager(getContext()));
         binding.newFeedsList.setAdapter(newFeedAdapter);
-        viewModel.getFeeds().observe(getViewLifecycleOwner(), feeds -> {
+        viewModel.getData().observe(getViewLifecycleOwner(), feeds -> {
             if (feeds != null)
                 newFeedAdapter.setFeeds(feeds);
         });

@@ -12,23 +12,28 @@ import by.pavel.mytutby.repository.feed.newfeed.NewFeedRepository;
 public class NewFeedViewModel extends ViewModel {
 
     private final NewFeedRepository repository;
-    private final MutableLiveData<List<Feed>> feeds;
+    private final MutableLiveData<List<Feed>> data;
 
     @ViewModelInject
     public NewFeedViewModel(NewFeedRepository repository) {
         this.repository = repository;
-        feeds = new MutableLiveData<>();
+        data = new MutableLiveData<>();
     }
 
-    public LiveData<List<Feed>> getFeeds() {
-        return feeds;
+    public LiveData<List<Feed>> getData() {
+        return data;
     }
 
     public void loadFeeds(String link) {
-        feeds.setValue(repository.getNewFeeds(link));
+        data.setValue(repository.getNewFeeds(link));
     }
 
     public void addFeed(Feed feed) {
         repository.addFeed(feed);
+        List<Feed> list = data.getValue();
+        if (list != null) {
+            list.remove(feed);
+            data.setValue(list);
+        }
     }
 }
